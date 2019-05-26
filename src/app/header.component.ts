@@ -1,10 +1,13 @@
-import { Component } from '@angular/core';
-import { headersToString } from 'selenium-webdriver/http';
+import { Component, EventEmitter, Output } from '@angular/core';
 
 @Component({
-    selector: 'app-header',
-    templateUrl: './header.component.html'
+  selector: 'cms-header',
+  templateUrl: './header.component.html'
 })
 export class HeaderComponent {
-    
+  @Output() featureSelected = new EventEmitter<string>();
+  
+  onSelect(feature: string) {
+    this.featureSelected.emit(feature);
+  }
 }

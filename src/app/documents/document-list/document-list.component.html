@@ -1,5 +1,3 @@
-<div class="row">
-  <div class="col-xs-12">
 <div class="panel panel-default">
   <div class="panel-heading">
     <div class="row pad-left-right">
@@ -10,12 +8,10 @@
   <div class="panel-body">
     <div class="center-panel">
       <cms-document-item
-      *ngFor="let document2 of documents"
-      [document] = document2
-      (documentSelected) = "onDocumentSelected(document2)">
-      </cms-document-item>
+      *ngFor="let document of documents"
+      [document]="document">
+    </cms-document-item>
     </div>
   </div>
-</div> 
-</div>
+
 </div>
