@@ -20,16 +20,11 @@ export class MessageService {
   }
 
   getMessage(id: string): Message {
-    if (!this.messages) {
-      return null;
+    for (let i = 0; i < this.messages.length; i++){
+      if (this.messages[i].id ===id){
+        return this.messages[i];
+      } 
     }
-
-    for (let message of this.messages) {
-      if (message.id === id) {
-        return message;
-      }
-    }
-
     return null;
   }
 

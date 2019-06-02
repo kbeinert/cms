@@ -1,24 +1,25 @@
-import { Component, OnInit } from '@angular/core';
-
+import { Component, OnInit, Input } from '@angular/core';
 import { Message } from '../message.model';
-import { MessageService } from '../message.service';
-@Component({
-  selector: 'cms-message-list',
-  templateUrl: './message-list.component.html',
-  styleUrls: ['./message-list.component.css']
-})
-export class MessageListComponent implements OnInit {
-  messages: Message[] = [];
+import { Contact } from '../../contacts/contact.model';
+import { ContactService } from '../../contacts/contacts.service';
 
-  constructor(private messageService: MessageService) { }
+@Component({
+  selector: 'cms-message-item',
+  templateUrl: './message-item.component.html',
+  styleUrls: ['./message-item.component.css']
+})
+export class MessageItemComponent implements OnInit {
+  @Input() message: Message;
+  @Input() contact: Contact;
+  messageSender: string = "";
+  canEdit: boolean = false;
   
+  constructor(private contactService: ContactService) { }
+
+
   ngOnInit() {
-    this.messages = this.messageService.getMessages();
-    this.messageService.messagesChanged
-      .subscribe(
-        (messages: Message[]) => {
-          this.messages = messages;
-        }
-      )
+    let contact: Contact = this.contactService.getContact(this.message.sender);
+    this.messageSender = contact.name;
   }
+
 }

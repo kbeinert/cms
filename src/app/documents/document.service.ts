@@ -1,5 +1,5 @@
 import { Injectable, EventEmitter } from '@angular/core';
-import{ Document } from './document.model'
+import{Document} from './document.model'
 import { MOCKDOCUMENTS } from './MOCKDOCUMENTS';
 
 @Injectable({
@@ -19,13 +19,14 @@ export class DocumentService {
     return this.documents.slice();
   }
 
-  getDocument(id: string): Document{
-    for (let i = 0; i < Document.length; i++){
-      if (this.documents[i].id === id){
-        return this.documents[i];
-      } 
+  getDocument(index: string): Document{
+    return this.documents[index];
+  }
+
+  deleteDocument(document: Document) {
+    if (document === null) {
+      return;
     }
-    return null;
   }
 
 }

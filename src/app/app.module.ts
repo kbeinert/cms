@@ -13,10 +13,16 @@ import { DocumentsComponent } from './documents/documents.component';
 import { DocumentListComponent } from './documents/document-list/document-list.component';
 import { DocumentItemComponent } from './documents/document-item/document-item.component';
 import { DocumentDetailComponent } from './documents/document-detail/document-detail.component';
+import { MessageItemComponent } from './messages/message-item/message-item.component';
 import { MessageListComponent } from './messages/message-list/message-list.component';
 import { MessageEditComponent } from './messages/message-edit/message-edit.component';
 import { DropdownDirective } from './documents/shared/dropdown.directive';
 import { MessageService } from './messages/message.service';
+import { ContactEditComponent } from './contacts/contact-list/contact-edit/contact-edit.component';
+import { DocumentEditComponent } from './documents/document-list/document-edit/document-edit.component';
+import { AppRoutingModule } from './app-routing';
+import { WindRefService } from './wind-ref.service';
+import { DocumentViewComponent } from './documents/document-view/document-view.component';
 
 
 @NgModule({
@@ -31,16 +37,21 @@ import { MessageService } from './messages/message.service';
     DocumentListComponent,
     DocumentItemComponent,
     DocumentDetailComponent,
+    MessageItemComponent,
     MessageListComponent,
     MessageEditComponent,
-    DropdownDirective
+    DropdownDirective,
+    ContactEditComponent,
+    DocumentEditComponent,
+    DocumentViewComponent
   ],
   imports: [
     BrowserModule,
     FormsModule,
-    HttpClientModule
+    HttpClientModule,
+    AppRoutingModule
   ],
-  providers: [MessageService],
+  providers: [MessageService, WindRefService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
