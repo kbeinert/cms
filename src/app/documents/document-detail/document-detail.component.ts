@@ -3,7 +3,7 @@ import { Router, ActivatedRoute, Params } from '@angular/router';
 
 import { Document } from '../document.model'
 import { DocumentService } from '../document.service';
-import { WindRefService } from '../../wind-ref.service';
+import { WindRefService } from 'src/app/wind-ref.service';
 
 
 @Component({
@@ -43,7 +43,7 @@ export class DocumentDetailComponent implements OnInit {
 
   onDelete() {
     this.documentService.deleteDocument(this.document);
-    this.router.navigate(['/documents']);
+    this.router.navigate(['/documents'], {relativeTo: this.route});
   }
 
 }

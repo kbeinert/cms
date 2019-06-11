@@ -1,13 +1,13 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { Document } from '../document.model';
+import { Document } from '../Document.model';
 
 @Component({
-  selector: 'cms-document-item',
-  templateUrl: './document-item.component.html',
-  styleUrls: ['./document-item.component.css']
+  selector: 'cms-Document-item',
+  templateUrl: './Document-item.component.html',
+  styleUrls: ['./Document-item.component.css']
 })
 export class DocumentItemComponent implements OnInit {
-  @Input() document: Document;
+  @Input() Document: Document;
   @Input() index: string;
 
   constructor() { }
