@@ -5,7 +5,7 @@ import { DocumentService } from './document.service';
 import { Subscription } from 'rxjs';
 
 @Component({
-  selector: 'cms-documents',
+  selector: 'cms-document',
   templateUrl: './documents.component.html',
   styleUrls: ['./documents.component.css']
 })

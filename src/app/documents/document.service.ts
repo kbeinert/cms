@@ -7,6 +7,7 @@ import { Subject } from 'rxjs';
   providedIn: 'root'
 })
 export class DocumentService {
+  documentChangedEvent: any;
 
   constructor() { 
     this.documents = MOCKDOCUMENTS;

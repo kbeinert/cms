@@ -1,22 +1,14 @@
 <div class="row">
-    <div class="col-xs-12">
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <div class="row">
-                    <span class="panel-heading u-header-1">Contacts</span>
-                    <a class="btn btn-success pull-right" (click)="onNewcontact()">New Contact</a>
-                </div>
-            </div>
-            <div class="panel-body">
-                <div class="row">
-                    <div class="col-xs-12">
-                        <cms-contact-item 
-                        *ngFor="let contact of contacts; let i = index" 
-                        [contact]="contact"
-                        [index]="i"></cms-contact-item>
-                    </div>
-                </div>
-            </div>
+    <div class="panel panel-default">
+      <div class="col-xs-12 panel-heading">
+          <h1 class="header">Contacts<a routerLink="new" class="btn btn-success pull-right">New Contact</a></h1>
+      </div>
+      <div class="panel-body">
+        <div class="row">
+          <div class="col-xs-12">
+            <cms-contact-item *ngFor="let contactEL of contacts" [contact]="contactEL" dnd-draggable [dragEnabled]="true" [dragData]="contactEL" [dropZones]="['contactGroup']"></cms-contact-item>
+          </div>
         </div>
+      </div>
     </div>
-</div>
+  </div>
