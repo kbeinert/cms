@@ -1,86 +1,104 @@
-import { Subject } from 'rxjs';
-import { Injectable } from '@angular/core';
+import { Injectable, EventEmitter } from '@angular/core';
 import { Contact } from './contact.model';
 import { MOCKCONTACTS } from './MOCKCONTACTS';
-@Injectable({
-  providedIn: 'root'
-})
-export class ContactService {
-  contactChangedEvent = new Subject<Contact[]>();
-  contactSelectedEvent = new Subject<Contact[]>();
-  contacts: Contact[] = [];
-  contact: Contact;
-  maxId: number;
-  currentId: number;
-  maxContactId: number;
-  contactsListClone: Contact[] = [];
+import { Subject } from 'rxjs';
+import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 
-  constructor() {
-    this.contacts = MOCKCONTACTS;
-    this.maxId = this.getMaxId();
+@Injectable()
+export class ContactService {
+  contactSelectedEvent = new EventEmitter<Contact[]>();
+  // contactChangedEvent = new Subject<Contact[]>();
+  contactListChangedEvent = new Subject<Contact[]>();
+  contacts: Contact[] = [];
+  maxContactId: number;
+
+  constructor(private http: HttpClient) {
+    // this.contacts = MOCKCONTACTS;
+    this.maxContactId = this.getMaxId();
+    this.getContacts();
   }
 
-  getContacts(): Contact[] {
-    return this.contacts.slice();
+  storeContacts() {
+    this.contacts = JSON.parse(JSON.stringify(this.contacts));
+    const header = new HttpHeaders({'Content-Type': 'application/json'});
+    return this.http.put('https://cms-project-7eb11.firebaseio.com/contacts.json', this.contacts, { headers: header})
+      .subscribe(
+        (contacts: Contact[]) => {
+          this.contactListChangedEvent.next(this.contacts.slice());
+        }
+      );
+  }
+
+  getContacts() {
+    this.http.get('https://cms-project-7eb11.firebaseio.com/contacts.json')
+      .subscribe(
+        (contacts: Contact[]) => {
+          this.contacts = contacts;
+          this.contacts.sort((a, b) => (a['name'] < b['name']) ? 1 : (a['name'] > b['name']) ? -1 : 0);
+          this.contactListChangedEvent.next(this.contacts.slice());
+        }, (error: any) => {
+          console.log('something bad happened...');
+        }
+      );
   }
 
   getContact(id: string): Contact {
-    for (let i = 0; i < this.contacts.length; i++) {
-      if (this.contacts[i].id === id) {
-        return this.contacts[i];
+    for (const contact of this.contacts) {
+      if (contact.id === id) {
+        return contact;
       }
     }
     return null;
   }
 
   deleteContact(contact: Contact) {
-    if (!contact) {
+    if (contact === null || contact === undefined) {
       return;
     }
-
-    const pos = this.contacts.findIndex(c => c.id === contact.id);
-    
+    const pos = this.contacts.indexOf(contact);
     if (pos < 0) {
       return;
     }
     this.contacts.splice(pos, 1);
-    this.contactChangedEvent.next(this.contacts.slice());
+    this.storeContacts();
+  }
+
+  getMaxId(): number {
+    let maxId = 0;
+    for (const contact of this.contacts) {
+      const currentId = parseInt(contact.id, 10);
+      if (currentId > maxId) {
+        maxId = currentId;
+      }
+    }
+    return maxId;
   }
 
   addContact(newContact: Contact) {
-    if (!newContact) {
+    if (newContact === null) {
       return;
     }
 
     this.maxContactId++;
-    newContact.id = window.location.hash = this.maxContactId.toString();
+    newContact.id = String(this.maxContactId);
     this.contacts.push(newContact);
-    this.contactChangedEvent.next(this.contacts.slice());
+    this.storeContacts();
   }
 
-  getMaxId(): number {
-    this.contacts.forEach(contact => {
-      this.currentId = +contact.id;
-      if (this.currentId > this.maxId)
-        this.maxId = this.currentId;
-    });
-    return this.maxId;
-  }
-
-
-  updateContact(originalContact: Contact, newContact: Contact) {
-    if (!originalContact || !newContact) {
-      return;
-    }
-
-    const pos = this.contacts.indexOf(originalContact)
-    if (pos < 0) {
+  updateContact(originalContact: Contact,
+                newContact: Contact) {
+    if (originalContact === null || newContact === null
+      || originalContact === undefined || newContact === undefined) {
       return;
     }
 
     newContact.id = originalContact.id;
+    const pos = this.contacts.indexOf(originalContact);
+    if (pos < 0) {
+      return;
+    }
+
     this.contacts[pos] = newContact;
-    this.contactsListClone = this.contacts.slice();
-    this.contactChangedEvent.next(this.contactsListClone);
+    this.storeContacts();
   }
 }
