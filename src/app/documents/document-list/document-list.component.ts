@@ -1,6 +1,7 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Document } from '../document.model';
-import { DocumentsService } from '../document.service';
+import { Component, OnInit } from '@angular/core';
+
+import { Document } from '../document.model' 
+import { DocumentService } from '../document.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 
@@ -9,27 +10,20 @@ import { Subscription } from 'rxjs';
   templateUrl: './document-list.component.html',
   styleUrls: ['./document-list.component.css']
 })
-export class DocumentListComponent implements OnInit, OnDestroy {
-  document: Document[] = [];
+export class DocumentListComponent implements OnInit {
+  documents: Document[] = [];
   subscription: Subscription;
-
-  constructor(private documentService: DocumentsService,
-              private router: Router,
-              private route: ActivatedRoute) {
-   this.documentService.getDocuments();
+  
+  constructor(private documentService: DocumentService) {
+  
   }
 
   ngOnInit() {
+    this.documentService.getDocuments();
     this.subscription = this.documentService.documentListChangedEvent
-      .subscribe(
-        (documentsList: Document[]) => {
-          this.document = documentsList;
-        }
-      );
-  }
-
-  onNewDocument() {
-    this.router.navigate(['new'], {relativeTo: this.route});
+      .subscribe((documents: Document[])=> {
+        this.documents = documents;
+      })
   }
 
   ngOnDestroy() {

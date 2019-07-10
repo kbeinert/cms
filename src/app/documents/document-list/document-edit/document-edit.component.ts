@@ -1,66 +1,59 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
-import { DocumentService } from '../../document.service';
-import { FormGroup, NgForm } from '@angular/forms';
-import { Document } from '../../document.model';
+import {DocumentService} from "../../document.service";
+import {Document} from "../../document.model";
+import {NgForm} from "@angular/forms";
 
 @Component({
-  selector: 'cms-document-edit',
+  selector: 'app-document-edit',
   templateUrl: './document-edit.component.html',
   styleUrls: ['./document-edit.component.css']
 })
 export class DocumentEditComponent implements OnInit {
-
-  originalDocument: Document;
-  document: Document;
   id: string;
-  editMode: boolean = false;
-  documentForm: FormGroup;
+  editMode:boolean = false;
+  document: Document;
+  originalDocument: Document;
 
-  constructor(private route: ActivatedRoute,
-    private router: Router,
-    private documentsService: DocumentService) {
+  constructor(private documentService: DocumentService,
+              private  router: Router, 
+              private route: ActivatedRoute) { }
 
+  ngOnInit () {
+    this.route.params
+      .subscribe(
+        (params: Params) => {
+          const id = params.id;
+          if (id == undefined || id == null) {
+            return;
+          }
+          this.originalDocument = this.documentService.getDocument(id);
+          if (this.originalDocument == undefined || this.originalDocument == null) {
+            return;
+          }
+
+          this.editMode = true;
+          this.document = JSON.parse(JSON.stringify(this.originalDocument));
+         }
+      )
   }
-
-  ngOnInit() {
-    this.route.params.subscribe(
-      (params: Params) => {
-        this.id = params['id'];
-        if (!this.id) {
-          this.editMode = false;
-          return;
-        }
-
-        this.originalDocument = this.documentsService.getDocument(this.id);
-
-        if (!this.originalDocument) {
-          return;
-        }
-        this.editMode = true;
-        this.document = JSON.parse(JSON.stringify(this.originalDocument));
-      }
-    );
-  }
-
-
+            
   onSubmit(form: NgForm) {
-    let values = form.value;
-
-    let newDocument = new Document(' ', values.name, values.description, values.url, null);
-
-    if (this.editMode) {
-      this.documentsService.updateDocument(this.originalDocument, newDocument);
+    const values = form.value;
+    console.log(values);
+         
+    var newDocument = new Document(null, values.documentTitle, values.documentDescription, values.documentUrl, null);
+         
+    if (this.editMode == true) {
+      this.documentService.updateDocument(this.originalDocument, newDocument);
+    } else {
+      this.documentService.addDocument(newDocument);
     }
-    else {
-      this.documentsService.addDocument(newDocument);
-    }
-    this.router.navigate(['../'], { relativeTo: this.route });
+    this.router.navigate(['../'], {relativeTo: this.route});
   }
-
-
+            
   onCancel() {
-    // Simply navigate back to reminders view
-    this.router.navigate(['../'], { relativeTo: this.route });
+    this.router.navigate(['../'], {relativeTo: this.route});
   }
+
 }

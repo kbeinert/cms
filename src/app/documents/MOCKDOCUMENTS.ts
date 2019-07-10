@@ -1,3 +1,5 @@
+import {Document} from './document.model';
+
 export const MOCKDOCUMENTS: any[] = [
   {
     id: '1',

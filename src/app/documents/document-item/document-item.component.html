@@ -1,6 +1,6 @@
 <a  style="cursor: pointer;" 
-    [routerLink]="[index]"
+    [routerLink]="[document?.id]"
     routerLinkActive="active"
-    class="list-group-item clearfix DocumentDiv">
-    {{ Document.name }}
+    class="list-group-item clearfix documentDiv">
+    {{ document?.name }}
 </a>

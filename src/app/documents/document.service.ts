@@ -1,102 +1,120 @@
-import { Injectable, EventEmitter } from '@angular/core';
-import { Document } from './document.model';
+import { Injectable } from '@angular/core';
+import{Document} from './document.model'
+import { MOCKDOCUMENTS } from './MOCKDOCUMENTS';
 import { Subject } from 'rxjs';
 import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 
-@Injectable()
-export class DocumentsService {
-  documentSelectedEvent = new EventEmitter<Document[]>();
-  documentListChangedEvent = new Subject<Document[]>();
+@Injectable({
+  providedIn: 'root'
+})
+export class DocumentService {
+
+  constructor(private http: HttpClient) { }
+
   documents: Document[] = [];
   maxDocumentId: number;
-
-  constructor(private http: HttpClient) {
-    this.maxDocumentId = this.getMaxId();
-  }
-
-  storeDocments() {
-    this.documents = JSON.parse(JSON.stringify(this.documents));
-    const header = new HttpHeaders({'Content-Type': 'application/json'});
-    return this.http.put('https://cms-project-7eb11.firebaseio.com/documents.json', this.documents, { headers: header})
-      .subscribe(
-        (documents: Document[]) => {
-          this.documentListChangedEvent.next(this.documents.slice());
-        }
-      );
-  }
+  documentSelected = new Subject<Document>();
+  documentListChangedEvent = new Subject<Document[]>();
+  documentsListClone: Document[];
 
   getDocuments() {
-    this.http.get('https://cms-project-7eb11.firebaseio.com/documents.json')
-      .subscribe(
-        (documents: Document[]) => {
-          this.documents = documents;
-          this.documents.sort((a, b) => (a['name'] < b['name']) ? 1 : (a['name'] > b['name']) ? -1 : 0);
-          this.documentListChangedEvent.next(this.documents.slice());
-        }, (error: any) => {
-          console.log('something bad happened...');
-        }
-      );
+    this.http
+    .get<Document[]>('https://princecms-4f1e5.firebaseio.com/documents.json')
+    .subscribe((documents: Document[]) => {
+      this.documents = documents;
+      this.maxDocumentId = this.getMaxID();
+      this.documents.sort(compareDocumentsByID);
+      this.documentListChangedEvent.next(this.documents.slice());
+    }, (err: any) => {
+      console.error(err);
+    });
   }
 
-  getDocument(id: string): Document {
-    for (const document of this.documents) {
-      if (document.id === id) {
-        return document;
+  getDocument(id: string): Document{
+    for (var i = 0; i < this.documents.length; i++) {
+      if (this.documents[i].id === id) {
+        return this.documents[i];
       }
     }
     return null;
   }
 
   deleteDocument(document: Document) {
-    if (document === null || document === undefined) {
+    if (document === null) {
       return;
     }
     const pos = this.documents.indexOf(document);
     if (pos < 0) {
       return;
     }
-
     this.documents.splice(pos, 1);
-    this.storeDocments();
-  }
-
-  getMaxId(): number {
-    let maxId = 0;
-    for (const document of this.documents) {
-      const currentId = parseInt(this.documents.id, 10);
-      if (currentId > maxId) {
-        maxId = currentId;
-      }
-    }
-    return maxId;
+    this.documentsListClone = this.documents.slice();
+    this.storeDocuments();
+    this.documentListChangedEvent.next(this.documentsListClone);
   }
 
   addDocument(newDocument: Document) {
-    if (newDocument === null) {
-      return;
+    if (newDocument == undefined || newDocument == null) {
+      return
     }
-
-    this.maxDocumentId++;
-    newDocument.id = String(this.maxDocumentId);
+    this.maxDocumentId++
+    newDocument.id = this.maxDocumentId.toString();
     this.documents.push(newDocument);
-    this.storeDocments();
+    this.documentsListClone = this.documents.slice();
+    this.storeDocuments();
+    this.documentListChangedEvent.next(this.documentsListClone);
   }
 
-  updateDocument (originalDocument: Document,
-                  newDocument: Document) {
-    if (originalDocument === null || newDocument === null
-      || originalDocument === undefined || newDocument === undefined) {
+  updateDocument(originalDocument: Document, newDocument: Document) {
+    if (originalDocument == null || originalDocument == undefined || newDocument == null || newDocument == undefined) {
       return;
     }
 
-    newDocument.id = originalDocument.id;
-    const pos = this.documents.indexOf(originalDocument);
+    var pos = this.documents.indexOf(originalDocument);
     if (pos < 0) {
       return;
     }
-
+    
+    newDocument.id = originalDocument.id;
     this.documents[pos] = newDocument;
-    this.storeDocments();
+    this.documentsListClone = this.documents.slice();
+    this.storeDocuments();
+    this.documentListChangedEvent.next(this.documentsListClone);
   }
 
+  getMaxID(): number {
+
+    let maxID = 0;
+
+    for (let document of this.documents) {
+      let currentID = +document.id;
+      if (currentID > maxID) {
+        maxID = currentID;
+      }
+    }
+
+    return maxID;
+  }
+
+  storeDocuments() {
+    let json = JSON.stringify(this.documents);
+    let header = new HttpHeaders();
+    header.set('Content-Type', 'application/json');
+    this.http
+    .put('https://princecms-4f1e5.firebaseio.com/documents.json', json, {
+      headers: header
+    }).subscribe(() => {
+      this.documentListChangedEvent.next(this.documents.slice());
+    });
+  }
 }
+
+  function compareDocumentsByID(lhs: Document, rhs: Document): number {
+    if (lhs.id < rhs.id) {
+      return -1;
+    } else if (lhs.id === rhs.id) {
+      return 0;
+    } else {
+      return 1;
+    }
+  }

@@ -1,32 +1,67 @@
 <div class="panel panel-default">
   <div class="panel-body">
+
     <form id="document-edit" (ngSubmit)="onSubmit(f)" #f="ngForm">
       <div class="row">
         <div class="col-sm-12 form-group">
           <label for="name">Document title</label>
-          <input [ngModel]=document?.name name="name" type="text" id="name" class="form-control" size="120" max="120"
-            required #name="ngModel">
+          <input
+            type="text"
+            id="name"
+            class="form-control"
+            size="120"
+            max="120"
+            name="documentTitle"
+            [ngModel]="originalDocument?.name"
+            #documentTitle
+            ngModel
+            required
+          >
         </div>
+
         <div class="col-sm-12 form-group">
           <label for="description">Document description</label>
-          <input [ngModel]=document?.description name="description" type="text" id="description" class="form-control"
-            size="120" max="255" #description="ngModel">
+          <input
+            type="text"
+            id="description"
+            class="form-control"
+            size="120"
+            max="255"
+            name="documentDescription"
+            [ngModel]="originalDocument?.description"
+          >
         </div>
+
         <div class="col-sm-12 form-group">
           <label for="documentUrl">Document URL</label>
-          <input [ngModel]=document?.url name="url" type="text" id="url" class="form-control" size="150"
-            max="255" required #url="ngModel">
-          <div class="alert alert-danger" *ngIf="!description || !name">
-            The Document title and URL are required fields
-          </div>
+          <input
+            type="text"
+            id="documentUrl"
+            class="form-control"
+            size="150"
+            max="255"
+            name="documentUrl"
+            [ngModel]="originalDocument?.url"
+            ngModel
+            required
+            #documentUrl
+          >
         </div>
+
       </div>
+
+      <div *ngIf="!f.valid" class="alert alert-danger">The Document Title and URL are required fields
+      </div>
+
+
       <div class="row">
-        <div class="col-xs-12">
-          <button class="btn btn-success" type="submit" [disabled]="!f.valid">{{ editMode ? 'Update' : 'Add'}}</button>
+        <div class="col-xs-12 btn-toolbar" >
+          <button [disabled]="!f.valid" class="btn btn-success" type="submit">Save</button>
           <button class="btn btn-primary" type="button" (click)="onCancel()">Cancel</button>
         </div>
       </div>
+
     </form>
+
   </div>
 </div>

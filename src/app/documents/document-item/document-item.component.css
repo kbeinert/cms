@@ -1,4 +1,4 @@
-.DocumentDiv {
+.documentDiv {
   width: 9rem;
   height: 11rem;
   margin: 2px;
@@ -6,4 +6,4 @@
   border: solid thin darkgrey;
   float: left;
   padding: .25rem
-} 
+}

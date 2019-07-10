@@ -1,5 +1,5 @@
 import { Injectable, EventEmitter, OnInit } from '@angular/core';
-import { MOCKMESSAGES } from './MOCKMESSAGES.service';
+import { MOCKMESSAGES } from './MOCKMESSAGES';
 import { Message } from './message.model';
 import { Subject } from 'rxjs';
 import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
