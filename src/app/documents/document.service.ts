@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
-import{Document} from './document.model'
-import { MOCKDOCUMENTS } from './MOCKDOCUMENTS';
+import { Document } from './documents.model';
 import { Subject } from 'rxjs';
 import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 
@@ -19,7 +18,7 @@ export class DocumentService {
 
   getDocuments() {
     this.http
-    .get<Document[]>('https://princecms-4f1e5.firebaseio.com/documents.json')
+    .get<Document[]>('link to database')
     .subscribe((documents: Document[]) => {
       this.documents = documents;
       this.maxDocumentId = this.getMaxID();
@@ -101,7 +100,7 @@ export class DocumentService {
     let header = new HttpHeaders();
     header.set('Content-Type', 'application/json');
     this.http
-    .put('https://princecms-4f1e5.firebaseio.com/documents.json', json, {
+    .put('link to database', json, {
       headers: header
     }).subscribe(() => {
       this.documentListChangedEvent.next(this.documents.slice());

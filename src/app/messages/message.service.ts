@@ -1,74 +1,83 @@
-import { Injectable, EventEmitter, OnInit } from '@angular/core';
-import { MOCKMESSAGES } from './MOCKMESSAGES';
-import { Message } from './message.model';
+import { Injectable } from '@angular/core';
+import { Message } from './messages.model';
 import { Subject } from 'rxjs';
 import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 
+@Injectable({
+  providedIn: 'root'
+})
+export class MessageService {
 
-@Injectable()
-export class MessagesService {
-    messageChangeEvent = new Subject<Message[]>();
-    messages: Message[] = [];
-    maxMessageId: number;
+  constructor(private http: HttpClient) { }
 
-    constructor(private http: HttpClient) {
-        // this.messages = MOCKMESSAGES;
-        this.maxMessageId = this.getMaxId();
+  messages: Message[] = [];
+  messagesChanged = new Subject<Message[]>();
+  maxMessageId: number;
+
+  getMessages() {
+    this.http
+    .get<Message[]>('')
+    .subscribe((messages: Message[]) => {
+      this.messages = messages;
+      this.maxMessageId = this.getMaxId();
+      this.messages.sort(compareMessagesByID);
+      this.messagesChanged.next(this.messages.slice());
+    }, (err: any) => {
+      console.log(err);
+    });
+  }
+
+  getMessage(id: string): Message {
+    for (let i = 0; i < this.messages.length; i++){
+      if (this.messages[i].id ===id){
+        return this.messages[i];
+      } 
+    }
+    return null;
+  }
+
+  storeMessages() {
+    let json = JSON.stringify(this.messages);
+    let header = new HttpHeaders();
+    header.set('Content-Type', 'application/json');
+    this.http
+    .put('', json, {
+      headers: header
+    }).subscribe(() => {
+          this.messagesChanged.next(this.messages.slice());
+        });
+  }
+
+  addMessage(newMessage: Message) {
+    if (newMessage === null) {
+      return;
     }
 
-    storeMessages() {
-        this.messages = JSON.parse(JSON.stringify(this.messages));
-        const header = new HttpHeaders({'Content-Type': 'application/json'});
-        return this.http.put('https://cms-project-7eb11.firebaseio.com/messages.json', this.messages, { headers: header})
-          .subscribe(
-            (messages: Message[]) => {
-              this.messageChangeEvent.next(this.messages.slice());
-            }
-          );
-      }
+    this.maxMessageId++;
+    newMessage.id = String(this.maxMessageId);
+    this.messages.push(newMessage);
+    this.storeMessages();
+  }
 
-      getMessages() {
-        this.http.get('https://cms-project-7eb11.firebaseio.com/messages.json')
-          .subscribe(
-            (messages: Message[]) => {
-              this.messages = messages;
-              this.messages.sort((a, b) => (a['name'] < b['name']) ? 1 : (a['name'] > b['name']) ? -1 : 0);
-              this.messageChangeEvent.next(this.messages.slice());
-            }, (error: any) => {
-              console.log('something bad happened...');
-            }
-          );
+  getMaxId (): number {
+    var maxId = 0;
+    for (var i = 0; i < this.messages.length; i++) {
+      var currentId = Number(this.messages[i]['id']);
+      if (currentId > maxId) {
+        maxId = currentId;
       }
+    }
+    return maxId;
+  }
 
-      getMessage(id: string) {
-        for (const message of this.messages) {
-          if (message.id === id) {
-            return message;
-          }
-        }
-        return null;
-      }
+}
 
-      addMessage(newMessage: Message) {
-        if (newMessage === null) {
-          return;
-        }
-
-        this.maxMessageId++;
-        newMessage.id = String(this.maxMessageId);
-        this.messages.push(newMessage);
-        // this.messageChangeEvent.emit(this.messages.slice());
-        this.storeMessages();
-      }
-
-      getMaxId(): number {
-        let maxId = 0;
-        for (const message of this.messages) {
-          const currentId = +message.id;
-          if (currentId > maxId) {
-            maxId = currentId;
-          }
-        }
-        return maxId;
-      }
+function compareMessagesByID(lhs: Message, rhs: Message): number {
+  if (lhs.id < rhs.id) {
+    return -1;
+  } else if (lhs.id === rhs.id) {
+    return 0;
+  } else {
+    return 1;
+  }
 }

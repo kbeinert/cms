@@ -11,19 +11,20 @@ import { ContactDetailComponent } from './contacts/contact-detail/contact-detail
 import { ContactItemComponent } from './contacts/contact-list/contact-item/contact-item.component';
 import { DocumentsComponent } from './documents/documents.component';
 import { DocumentListComponent } from './documents/document-list/document-list.component';
-import { DocumentItemComponent } from './documents/document-item/document-item.component';
+import { DocumentItemComponent } from './documents/document-list/document-item/document-item.component';
 import { DocumentDetailComponent } from './documents/document-detail/document-detail.component';
-import { MessageItemComponent } from './messages/message-item/message-item.component';
+import { MessageItemComponent } from './messages/message-list/message-item/message-item.component';
 import { MessageListComponent } from './messages/message-list/message-list.component';
-import { MessageEditComponent } from './messages/message-edit/message-edit.component';
-import { DropdownDirective } from './documents/shared/dropdown.directive';
+import { MessageEditComponent } from './messages/message-list/message-edit/message-edit.component';
+import { DropdownDirective } from './shared/dropdown.directive';
+import { MessageService } from './messages/message.service';
 import { ContactEditComponent } from './contacts/contact-list/contact-edit/contact-edit.component';
 import { DocumentEditComponent } from './documents/document-list/document-edit/document-edit.component';
-import { AppRoutingModule } from './app-routing';
+import { AppRoutingModule } from './app-routing.module';
 import { WindRefService } from './wind-ref.service';
 import { DocumentViewComponent } from './documents/document-view/document-view.component';
 import { ContactsFilterPipe } from './contacts/contacts-filter.pipe';
-//import {DndModule} from 'ng2-dnd';
+import { DndModule } from 'ng2-dnd';
 
 
 @NgModule({
@@ -52,9 +53,9 @@ import { ContactsFilterPipe } from './contacts/contacts-filter.pipe';
     FormsModule,
     HttpClientModule,
     AppRoutingModule,
-    //DndModule.forRoot()
+    DndModule.forRoot()
   ],
-  providers: [ WindRefService],
+  providers: [MessageService, WindRefService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

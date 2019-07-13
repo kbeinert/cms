@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 
-import { Document } from '../document.model' 
+import { Document } from '../documents.model' 
 import { DocumentService } from '../document.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';

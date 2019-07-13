@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 
-import { Document } from '../document.model'
+import { Document } from '../documents.model'
 import { DocumentService } from '../document.service';
 import { WindRefService } from 'src/app/wind-ref.service';
 

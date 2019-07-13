@@ -1,4 +1,3 @@
-import {Document} from './document.model';
 
 export const MOCKDOCUMENTS: any[] = [
   {
@@ -50,7 +49,7 @@ export const MOCKDOCUMENTS: any[] = [
   },
   {
     id: '10',
-    name: 'CIT 460 - Enterprise Development',
+    name: 'CIT 460 - Enterprise Development TEST',
     url: 'https://rkjackson.wordpress.com/',
     children: [
       {id: '12', name: 'Case 1 – Defining the requirements', url: 'https://rkjackson.wordpress.com/cases/case-1/'},

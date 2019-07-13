@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import {DocumentService} from "../../document.service";
-import {Document} from "../../document.model";
+import {Document} from "../../documents.model";
 import {NgForm} from "@angular/forms";
 
 @Component({
