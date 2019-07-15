@@ -21,7 +21,7 @@ export class ContactService {
 
   getContacts() {
     this.http
-    .get<Contact[]>('link to database')
+    .get<Contact[]>('https://localhost:3000/contacts')
     .subscribe((contacts: Contact[]) => {
       this.contacts = contacts;
       this.maxContactId = this.getMaxID();
@@ -99,7 +99,7 @@ export class ContactService {
     let header = new HttpHeaders();
     header.set('Content-Type', 'application/json');
     this.http
-    .put('link to database', json, {
+    .put('https://localhost:3000/contacts', json, {
       headers: header
     }).subscribe(() => {
       this.contactListChangedEvent.next(this.contacts.slice());
