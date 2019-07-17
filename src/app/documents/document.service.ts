@@ -18,7 +18,7 @@ export class DocumentService {
 
   getDocuments() {
     this.http
-    .get<Document[]>('https://localhost:3000/documents')
+    .get<Document[]>('http://localhost:3000/documents')
     .subscribe((documents: Document[]) => {
       this.documents = documents;
       this.maxDocumentId = this.getMaxID();
@@ -100,7 +100,7 @@ export class DocumentService {
     let header = new HttpHeaders();
     header.set('Content-Type', 'application/json');
     this.http
-    .put('https://localhost:3000/documents', json, {
+    .put('http://localhost:3000/documents', json, {
       headers: header
     }).subscribe(() => {
       this.documentListChangedEvent.next(this.documents.slice());

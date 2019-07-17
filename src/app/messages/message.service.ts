@@ -16,7 +16,7 @@ export class MessageService {
 
   getMessages() {
     this.http
-    .get<Message[]>('https://localhost:3000/messages')
+    .get<Message[]>('http://localhost:3000/messages')
     .subscribe((messages: Message[]) => {
       this.messages = messages;
       this.maxMessageId = this.getMaxId();
@@ -41,7 +41,7 @@ export class MessageService {
     let header = new HttpHeaders();
     header.set('Content-Type', 'application/json');
     this.http
-    .put('https://localhost:3000/messages', json, {
+    .put('http://localhost:3000/messages', json, {
       headers: header
     }).subscribe(() => {
           this.messagesChanged.next(this.messages.slice());

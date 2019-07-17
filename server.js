@@ -8,14 +8,23 @@ var logger = require('morgan');
 var mongoose = require('mongoose');
 
 // import the routing file to handle the default (index) route
-var index = require('./server/routes/app');
+var index = require('./backend/routes/app');
 
 // ... ADD CODE TO IMPORT YOUR ROUTING FILES HERE ... 
 
 // establish a connection to the mongo database
 // *** Important *** change yourPort and yourDatabase
 //     to those used by your database
-mongoose.connect('mongodb://localhost:27017/cms');
+mongoose.connect('mongodb://localhost:27017/Final',
+    { useNewUrlParser: true }, (err, res) => {
+        if (err) {
+            console.log('Connection failed ' + err);
+        }
+        else {
+            console.log('Connected to database!');
+        }
+    }
+);
 
 var app = express(); // create an instance of express
 
@@ -28,7 +37,7 @@ app.use(logger('dev')); // Tell express to use the Morgan logger
 
 // Tell express to use the specified director as the
 // root directory for your web site
-app.use(express.static(path.join(__dirname, 'dist/cms')));
+app.use(express.static(path.join(__dirname, 'dist/final-app')));
 
 // Tell express to map the default route ("/") to the index route
 app.use('/', index);
@@ -37,7 +46,7 @@ app.use('/', index);
 
 // Tell express to map all other non-defined routes back to the index page
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'dist/cms/index.html'));
+  res.sendFile(path.join(__dirname, 'dist/final-app/index.html'));
 });
 
 //add support for CORS

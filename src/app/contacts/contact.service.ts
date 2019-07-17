@@ -1,6 +1,5 @@
 import { Injectable, EventEmitter } from '@angular/core';
 import { Contact } from './contacts.model';
-import { MOCKCONTACTS } from './MOCKCONTACTS';
 import { Subject } from 'rxjs';
 import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 
@@ -21,7 +20,7 @@ export class ContactService {
 
   getContacts() {
     this.http
-    .get<Contact[]>('https://localhost:3000/contacts')
+    .get<Contact[]>('http://localhost:3000/contacts')
     .subscribe((contacts: Contact[]) => {
       this.contacts = contacts;
       this.maxContactId = this.getMaxID();
@@ -99,7 +98,7 @@ export class ContactService {
     let header = new HttpHeaders();
     header.set('Content-Type', 'application/json');
     this.http
-    .put('https://localhost:3000/contacts', json, {
+    .put('http://localhost:3000/contacts', json, {
       headers: header
     }).subscribe(() => {
       this.contactListChangedEvent.next(this.contacts.slice());
